@@ -21,7 +21,7 @@ Some of the key components and control systems used in neutral atoms are:
 
 Ultra-high vacuum chambers, Laser cooling setup, Optical tweezer array, Control Electronics, Detector etc.
 
-![Schematic overview of cold atom quantum computer](overview_coldatom_computer.png) [Reference of the image](https://epjquantumtechnology.springeropen.com/articles/10.1140/epjqt/s40507-023-00190-1)
+![Schematic overview of cold atom quantum computer](/assets/images/hardwares/overview_coldatom_computer.png) [Reference of the image](https://epjquantumtechnology.springeropen.com/articles/10.1140/epjqt/s40507-023-00190-1)
 
 **Caliberation operations**
 

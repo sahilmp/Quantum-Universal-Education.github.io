@@ -6,10 +6,8 @@ permalink: /hardware/nv-center-in-diamond/
 
 In pure diamond, every carbon atom is bonded in a tight 3-D network. Sometimes, one of the carbon atom is replaced by nitrogen atom (This is called as impurity) and the spot next to the nitrogen atom is a vacant spot but usually thats where a carbon atom should be originally. That nitrogen + vacant spair becomes the NV center. This NV center is of importance cause in pure diamond the carbon atom has 4 exactly valence electrons when carbon atom is replaces with nitrogen atom it has there is one extra valence electron because nitrogen atom has 5 valence electrons. Thus, one electron doesnt have a pair inside the lattice. Thus the vacant spot traps the electron in the defect. Together, they form a tiny **atom** inside the diamond that has unpaired electron spins and special energy levels.
 
-![NV center in diamond](NV_center_vacancy.png) 
+![NV center in diamond](/assets/images/hardwares/NV_center_vacancy.png) 
 [NV center in diamond](https://magnetometryrp.quantumtinkerer.tudelft.nl/1_NVbackground/) 
-
-
 
 **NV center as qubits**
 

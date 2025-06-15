@@ -6,98 +6,149 @@ permalink: /hardware/superconducting-qubits/
 
 Superconducting qubits are a type of quantum bit used in quantum computing by leveraging the superconducting materials to create qubits to represent and manipulate quantum information. Superconducting qubits utilize josephson junctions to create non-linear inductance which is crucial for defining the energy levels of qubits (ground state and excited states). The qubit states can be manipulated with the help using microwave pulses enabling quantum operations. Some of the main superconducting qubits are:
 
-1. **Charge qubits**
-2. **Phase qubits**
-3. **Flux qubit** 
-4. **Transom qubit**
-5. **Xmon qubit** 
-6. **Fluxonium qubit**
-7. **Cat qubit**
-8. **0-pi qubit**
+1. **Charge Qubit**  
+2. **Phase Qubit**  
+3. **Flux Qubit**  
+4. **Transmon Qubit**  
+5. **Xmon Qubit**  
+6. **Fluxonium Qubit**  
+7. **Cat Qubit**  
+8. **0–π Qubit**
 
-Superconducting qubits are the forefront of quantum computing research despite its high potential they face challenges related to noise and error rates. Environmental disturbances are also an important challenge faced. Researchers and scientist are working to mitigate errors.
+Despite their high performance and scalability, superconducting qubits face challenges with **decoherence**, **gate fidelity**, and **environmental noise**. Extensive research is underway to improve their robustness and error tolerance.
 
-**Applications of Superconducting qubits**
+---
 
-1. Drug discovery and Molecular modelling
-2. Optimization and Finance
-3. Machine learning and data analytics
-4. Material design
+### **Superconducting Qubits as Quantum Bits**
 
+| Feature               | Description                                                                 |
+|------------------------|-----------------------------------------------------------------------------|
+| **Qubit Encoding**     | Ground and excited states of a superconducting circuit                      |
+| **Gate Operations**    | Microwave pulses drive transitions between qubit states                     |
+| **Readout**            | Measured via dispersive coupling to a resonator and detecting transmission  |
+| **Scalability**        | On-chip integration allows large 2D arrays of qubits                        |
 
- Some of the companies working in superconducting qubits are:
+![IBM Superconducting qubit chip](/assets/images/hardwares/superconductin_qubit_1.png)
 
- **List of comapnies/Labs/Universities working in superconducting qubit architecture and their recent developments** 
+---
 
-1. **IBM**
+### **Calibration Operations**
 
-[IBM Quantum](https://www.ibm.com/quantum) has built a quantum computer with a 1,121-qubit processor named **Condor** in 2023. Qiskit Metal built by IBM is a design and simulation tool for superconducting qubits.
+| Operation               | Description                                                               | Notes                                      |
+|-------------------------|---------------------------------------------------------------------------|--------------------------------------------|
+| **Initialization**      | Passive thermalization to ground state in cryogenic environment          | Achieved at millikelvin temperatures       |
+| **Single-Qubit Gates**  | Microwave pulses drive transitions on specific qubits                    | ~10–100 ns per gate                        |
+| **Two-Qubit Gates**     | Tunable coupling between qubits (e.g., CZ, iSWAP)                         | ~100–300 ns per gate                       |
+| **Readout**             | Qubit state read via coupled resonator frequency shift                   | Typically nondestructive                   |
+| **Calibration Routines**| Frequency tuning, pulse shaping, gate benchmarking (e.g., randomized benchmarking) | Crucial for maintaining fidelity |
 
-![IBM Superconducting qubit chip](/assets/hardwares/superconductin_qubit_1.png)
+---
 
+### **Decoherence and Noise**
 
-2. **Google Quantum AI**
+| Source of Noise             | Description                                                               | Impact                                    |
+|-----------------------------|---------------------------------------------------------------------------|-------------------------------------------|
+| **Charge/Flux Noise**       | Causes qubit frequency drift                                              | Leads to decoherence                      |
+| **Crosstalk**               | Unintended qubit-qubit interactions                                       | Reduces fidelity of multi-qubit gates     |
+| **Dielectric Losses**       | Energy loss from materials or interfaces                                  | Limits T₁ relaxation time                 |
+| **Thermal Excitations**     | Residual excited states due to insufficient cooling                       | Errors in initialization and measurement  |
 
-[Google Quantum AI](https://quantumai.google/) has recently built a willow chip (105 qubits) on superconducting qubits. 
+---
 
-![Google Willow Chip](google_willow_chip.png)
+### **Error Correction**
 
-3. **Quantum Circuits (QCI)**
+Superconducting platforms have been at the forefront of **experimental error correction**:
 
-[Quantum Circuits](https://quantumcircuits.com/technology/) has introduced quantum computing's first dual-rail qubit with built-in error detection. QCI systems leverage superconducting circuits for fast and reliable algorithm execution
+- **Surface code** and **repetition code** are widely implemented  
+- IBM and Google have demonstrated **logical qubits** and **syndrome extraction**  
+- Efforts continue toward **fault-tolerant quantum computing** using these codes at scale
 
+---
 
-4. **QpiAI**
+### **Variants of Superconducting Qubits**
 
-[QpiAI](https://qpiai.tech/technology) is India's first full-stack quantum computer. Their integrated approach combines modeling, compute, and automation to solve complex business and scientific problems at utility-scale.  
+| Variant              | Description                                                       | Pros                                     | Cons                                    | Example Use Case                        |
+|----------------------|-------------------------------------------------------------------|------------------------------------------|-----------------------------------------|-----------------------------------------|
+| **Transmon**         | Charge-insensitive version of charge qubit                        | Long coherence, easy to fabricate         | Still limited by relaxation/dephasing   | IBM, Google                             |
+| **Xmon**             | Cross-shaped variant of transmon, designed for connectivity       | Fast gates, scalable architecture         | Same noise limitations as transmon      | Google Sycamore                         |
+| **Fluxonium**        | Combines flux and transmon features                               | Higher anharmonicity, long coherence      | More complex circuit                    | Experimental labs (Yale)                |
+| **Cat Qubit**        | Encodes information in superpositions of coherent states          | Intrinsic error correction                | Complex resonator control               | Alice & Bob                             |
+| **0–π Qubit**        | Theoretical design with symmetry-protected states                 | Exponential suppression of errors         | Very hard to fabricate                  | Research stage                          |
 
-![QpiAI-Indus](QpiAI.png) 
+---
 
+### **Applications of Superconducting Qubits**
 
-5. **IQM**
+1. **Drug discovery & Molecular simulation**  
+   Simulating quantum chemistry at atomic scale.
 
-[IQM](https://meetiqm.com/) has built the most diverese portfolio of superconducting full-stack quantum computers with upto 150 high-fidelity qubits.  
+2. **Financial modeling & Portfolio optimization**  
+   Solving combinatorial optimization problems.
 
+3. **Quantum Machine Learning**  
+   Enhancing pattern recognition and classification tasks.
 
+4. **Material design & Physics simulations**  
+   Discovering new materials through quantum simulation.
 
-6. **Rigetti**
+---
 
-[Rigetti](https://www.rigetti.com/) builds their own full-stack technology by focussing on chip fabrication and design, building superconducting qubits and quantum processors, control systems and quantum software tools like PyQuil, Quilc and QVM. 
+### **Companies and Labs Working on Superconducting Qubits**
 
-7. **Artic Instruments**
+1. **[IBM](https://www.ibm.com/quantum)**  
+   Built the 1,121-qubit **Condor** chip. Developed **Qiskit Metal** for superconducting qubit design.
 
-[Artic Instruments](https://arcticinst.io/about) goal is to provide top-tier plug & play microwave readout solutions to customers. As a result their first step is towards building  quantum-limited parametric amplifiers. The image below is their developed flagship product and its called as C-band (4-8 GHz) travelling wave parametric amplifier that uses three-wave mixing and flux-tunability to achieve wideband near-quantum-limited amplification.
+2. **[Google Quantum AI](https://quantumai.google/)**  
+   Developed the **Willow** chip (105 qubits), and previously, the **Sycamore** processor.
 
-![Artic Instruments](Artic_Instruments.png)
+   ![Google Willow Chip](/assets/images/hardwares/google_willow_chip.png)
 
-8. **Qolab**
+3. **[Quantum Circuits Inc. (QCI)](https://quantumcircuits.com/technology/)**  
+   Pioneered **dual-rail superconducting qubits** with built-in error detection.
 
-[Qolab](https://qolab.ai/) focus on developing utility-scale superconducting quantum computers.
+4. **[QpiAI](https://qpiai.tech/technology)**  
+   India’s first full-stack quantum computer. Uses superconducting circuits.
 
-9. **Planckian**
+   ![QpiAI-Indus](/assets/images/hardwares/QpiAI.png)
 
-[Planckian](https://www.planckian.co/) 
+5. **[IQM](https://meetiqm.com/)**  
+   Builds full-stack superconducting quantum computers with 150+ high-fidelity qubits.
 
-10. **Oxford Quantum Circuits (OQC)**
+6. **[Rigetti](https://www.rigetti.com/)**  
+   Builds superconducting quantum chips and tools like **PyQuil** and **QVM**.
 
-[Oxford Quantum Circuits](https://oqc.tech/) builds full stack quantum systems. Recently, they built OQC Toshiko Gen 1 which is the world’s first enterprise-ready platform via Tokyo and London. It operates on superconducting qubits implemented within a coaxmon architecture. 
+7. **[Arctic Instruments](https://arcticinst.io/about)**  
+   Develops **C-band parametric amplifiers** for high-fidelity qubit readout.
 
-11. **Alice and Bob**
+   ![Arctic Instruments](/assets/images/hardwares/Artic_Instruments.png)
 
-[Alice and Bob](https://alice-bob.com/) uses **cat Qubit** the first qubit with built-in error correction to make quantum computers useful. 
+8. **[Qolab](https://qolab.ai/)**  
+   Focuses on utility-scale superconducting quantum computers.
 
+9. **[Planckian](https://www.planckian.co/)**  
+   Early-stage company advancing superconducting quantum hardware.
 
-**Recent breakthroughs by univeristy**
+10. **[Oxford Quantum Circuits (OQC)](https://oqc.tech/)**  
+    Built **OQC Toshiko Gen 1**, an enterprise-grade platform using **coaxmon** qubits.
 
-Chalmers university of technology and University of Maryland developed autonomous [Quantum refrigerators](https://www.nature.com/articles/s41567-024-02708-5) that cools superconducting qubits to record-low temperatures. This refrigerator takes heat from environment to achieve ground state probabilities of higher efficiency.
+11. **[Alice & Bob](https://alice-bob.com/)**  
+    Uses **cat qubits** with intrinsic error correction as their core architecture.
 
+---
 
+### **Recent University Breakthroughs**
 
-**Some Insightful articles or educational sources**
+- **Chalmers University** and **University of Maryland** developed **autonomous quantum refrigerators**  
+  ➤ [Read more](https://www.nature.com/articles/s41567-024-02708-5)  
+  These devices cool superconducting qubits to deeper ground states using heat absorption from the environment.
 
-1. [Guide to Superconducting qubits](https://arxiv.org/abs/1904.06560)
+---
 
-2. [Quick intro to superconducting qubits](https://www.spinquanta.com/news-detail/what-are-superconducting-qubits-quantum-engineer-explained20250211020213)
+### **Educational Resources**
 
+1. [Comprehensive Guide to Superconducting Qubits (arXiv)](https://arxiv.org/abs/1904.06560)  
+2. [Quick Intro from Spinquanta](https://www.spinquanta.com/news-detail/what-are-superconducting-qubits-quantum-engineer-explained20250211020213)
 
+---
 
+**In summary**, superconducting qubits are currently the most mature and scalable platform for quantum computing. While they still face noise and error challenges, companies and researchers worldwide are making rapid progress toward fault-tolerant quantum processors.

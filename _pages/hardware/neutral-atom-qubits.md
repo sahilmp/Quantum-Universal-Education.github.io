@@ -67,7 +67,7 @@ Neutral atoms field is an evolving field and not as matured as superconducting q
 
 1. **PasQal**
 
-[Pasqal](https://www.pasqal.com/) a leading organisation in neutral atom computing has recently demonstrated the trapping of more than 1110 rubidium atoms with approximately 2000 traps demonstrating the feasibility of large-scale neutral atom quantum computing . Recently PasQal and Riverlane partnered to integrate Pasqal’s neutral atom platform with Riverlane’s Deltaflow quantum error correction stack to achieve fault-tolerant quantum computing.![Pasqal roadmap](pasqal_roadmap.png) in this image they have a dedicated roadmap.
+[Pasqal](https://www.pasqal.com/) a leading organisation in neutral atom computing has recently demonstrated the trapping of more than 1110 rubidium atoms with approximately 2000 traps demonstrating the feasibility of large-scale neutral atom quantum computing . Recently PasQal and Riverlane partnered to integrate Pasqal’s neutral atom platform with Riverlane’s Deltaflow quantum error correction stack to achieve fault-tolerant quantum computing.![Pasqal roadmap](/assets/images/hardwares/pasqal_roadmap.png) in this image they have a dedicated roadmap.
 
 And their colloboration with NQCC has resulted in the demonstration of 16 x 16 neutral atom array which is the largest in UK. This became a crucial step towards scalable quantum computing. Recently, EuroHPC selected Pasqal to build 140 qubit neutral atom simulator in Italy.
 

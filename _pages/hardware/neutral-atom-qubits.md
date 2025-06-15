@@ -63,7 +63,6 @@ Neutral atoms field is an evolving field and not as matured as superconducting q
 2. **Quantum Sensing** Optical clocks, Interial sensor may share some trends with neutral atom architecture.
 
 
-
 **List of companies working in neutral atoms and some of their breakthroughs and roadmap**
 
 1. **PasQal**

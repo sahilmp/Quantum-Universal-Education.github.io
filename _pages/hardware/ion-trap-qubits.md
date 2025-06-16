@@ -40,7 +40,6 @@ Each trap has different uses. Penning traps can be used for precise magnetic mea
 
 [Quantinuum](https://www.quantinuum.com/) is one of the world's largest integrated quantum company focussed on developing Quantum Hardware architecture (Trapped ion), Computational chemistry , cybersecurity, AI/ML, Mathematics etc. Researchers also developed a roadmap for improvement in Hardware architecture till 2029.
 
-
 2. **IonQ**
 
 [IONQ](https://ionq.com/) is one of the well-known companies working in Ion trap technology. They built quantum systems which are universally accessible, high-performing and are commercially available. And these quantum computers are accessible via Quantum cloud and support most prominent Quantum SDK's like cirq, qiskit, aws, azure.
@@ -49,7 +48,7 @@ Each trap has different uses. Penning traps can be used for precise magnetic mea
 
 [AQT](https://www.aqt.eu/) offers fully functional trapped-ion quantum computers, ready for integration into existing high-performance computing (HPC) data centre installations, and cloud accessibility. Below image shows the 19-inch rack mounted quantum computer that operates at room temperature and consumes less than two kilowatts of electrical power, eliminating the need for special cooling, water, or extensive energy infrastructure.
 
-![Alpine Quantum Technology](Alpine.png)
+![Alpine Quantum Technology](/assets/images/hardwares/Alpine.png) 
 
 4. **Universal quantum**
 
@@ -59,7 +58,7 @@ Each trap has different uses. Penning traps can be used for precise magnetic mea
 
 [Oxford Ionics](https://www.oxionics.com/) works to achieve fault-tolerant quantum computing using trapped ion systems and they recently released a broad roadmap to achieve fault-tolerant quantum computing with the development of 10,000 + high-fidelity quantum processor in next 3 years. 
 
-![Oxford Ionics](OxfordIonics.png)
+![Oxford Ionics](/assets/images/hardwares/OxfordIonics.png) 
 
 
 6. **Open Quantum Design**

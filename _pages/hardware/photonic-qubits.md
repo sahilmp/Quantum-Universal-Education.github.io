@@ -39,7 +39,7 @@ Quantum photonics is applied in areas where unique properties of light can be ut
 **List of companies working in photonic qubits and their breakthroughs**
 
 **Quandela**
-[Quandela](https://www.quandela.com/) provides photonic quantum computing solutions. Their solutions are used in industrial applications, including energy, cybersecurity, and finance, showcasing the versatility of their unique technology. ![Quandela's hardware](quandela.png) has developed a flagship photonic quantum computer of the range 6- 24 qubits.
+[Quandela](https://www.quandela.com/) provides photonic quantum computing solutions. Their solutions are used in industrial applications, including energy, cybersecurity, and finance, showcasing the versatility of their unique technology. ![Quandela's hardware](/assets/images/hardwares/quandela.png) has developed a flagship photonic quantum computer of the range 6- 24 qubits.
 
 
 **Diamond Quanta**
@@ -54,7 +54,7 @@ Their main approach is to build a utility-scale, fault-tolerant quantum computer
 
 **Nu Quantum**
 
-[Nu Quantum](https://www.nu-quantum.com/) has built a world-first prototype for distributed quantum network control. Their ![Nu Quantum 19-inch rack-mount Quantum Networking Units (QNUs) ](nu_quantum.png)  host photonic technology to distribute quantum entanglement across processors. Reconfigurable entanglement links are dynamically orchestrated and maintained through our proprietary networking protocols for distributed computation and control.
+[Nu Quantum](https://www.nu-quantum.com/) has built a world-first prototype for distributed quantum network control. Their ![Nu Quantum 19-inch rack-mount Quantum Networking Units (QNUs) ](/assets/images/hardwares/nu_quantum_.png)  host photonic technology to distribute quantum entanglement across processors. Reconfigurable entanglement links are dynamically orchestrated and maintained through our proprietary networking protocols for distributed computation and control. 
 
 University of Cambridge and Nu Quantum together are working in quantum error correction, quantum communication and photonics. 
 

@@ -33,14 +33,14 @@ Superconducting qubits are the forefront of quantum computing research despite i
 
 [IBM Quantum](https://www.ibm.com/quantum) has built a quantum computer with a 1,121-qubit processor named **Condor** in 2023. Qiskit Metal built by IBM is a design and simulation tool for superconducting qubits.
 
-![IBM Superconducting qubit chip](/assets/hardwares/superconductin_qubit_1.png)
+![IBM Superconducting qubit chip](/assets/images/hardwares/superconductin_qubit_1.png)
 
 
 2. **Google Quantum AI**
 
 [Google Quantum AI](https://quantumai.google/) has recently built a willow chip (105 qubits) on superconducting qubits. 
 
-![Google Willow Chip](google_willow_chip.png)
+![Google Willow Chip](/assets/images/hardwares/google_willow_chip.png)
 
 3. **Quantum Circuits (QCI)**
 
@@ -51,7 +51,7 @@ Superconducting qubits are the forefront of quantum computing research despite i
 
 [QpiAI](https://qpiai.tech/technology) is India's first full-stack quantum computer. Their integrated approach combines modeling, compute, and automation to solve complex business and scientific problems at utility-scale.  
 
-![QpiAI-Indus](QpiAI.png) 
+![QpiAI-Indus](/assets/images/hardwares/QpiAI.png) 
 
 
 5. **IQM**
@@ -68,7 +68,7 @@ Superconducting qubits are the forefront of quantum computing research despite i
 
 [Artic Instruments](https://arcticinst.io/about) goal is to provide top-tier plug & play microwave readout solutions to customers. As a result their first step is towards building  quantum-limited parametric amplifiers. The image below is their developed flagship product and its called as C-band (4-8 GHz) travelling wave parametric amplifier that uses three-wave mixing and flux-tunability to achieve wideband near-quantum-limited amplification.
 
-![Artic Instruments](Artic_Instruments.png)
+![Artic Instruments](/assets/images/hardwares/Artic_Instruments.png)
 
 8. **Qolab**
 

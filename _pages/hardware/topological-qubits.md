@@ -6,6 +6,9 @@ permalink: /hardware/topological-qubits/
 
 Topology is the mathematical study of features that remain unchanged when an object is smoothly deformed—shifted, bent, or stretched—without tearing or re-attaching pieces. Topological quantum computing applies this idea by encoding information in global properties of exotic quasiparticles called anyons that emerge in certain low-temperature materials. When two anyons are exchanged, the quantum state acquires a transformation: if every pairwise exchange simply multiplies the state by a fixed phase (so the order of exchanges does not matter), the anyons are called Abelian; if different exchange sequences lead to distinct quantum states (meaning the operations do not commute), they are non-Abelian. Non-Abelian anyons are especially valuable because the resulting “braids” of world-lines can implement robust quantum logic gates whose resilience to local disturbances offers built-in error protection for future quantum computers.
 
+
+
+
 **Applications of Topological quantum computing**
 
 1. Materials discovery

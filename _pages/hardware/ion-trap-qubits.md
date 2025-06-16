@@ -11,7 +11,6 @@ Trapped ions means trapping an atom after removing an electron thus it becomes n
 We trap this positively charged ion by creating an electric cage inside a vacuum chamber. 
 Oscillating voltages on specially shaped metal electrodes generate forces that keep the ion suspended in free space, with no physical container touching it. Because the ion is locked in place by those carefully tuned electromagnetic fields, it floats almost motionless, allowing scientists to use lasers to control its internal energy levels (the qubit “0” and “1”) and to read out its state with very high precision. In short, a trapped ion is simply a single, positively charged atom held in midair by electric fields so that we can manipulate its quantum states.
 
-
 **Types of traps**
 
 There are two ways to trap ions(charged particle). By using electric field and magnetic fields.
@@ -33,6 +32,40 @@ Each trap has different uses. Penning traps can be used for precise magnetic mea
 
 5. Laser cooling
 
+**Calibration Operations**
+
+| Operation              | Description                                                                 | Typical Time / Notes                         |
+|------------------------|-----------------------------------------------------------------------------|----------------------------------------------|
+| **Initialization**     | Ions are cooled and pumped into a well-defined ground state using lasers.   | ~100 µs per ion                              |
+| **Single-Qubit Gates** | Laser or microwave pulses manipulate internal energy levels.                | ~1–10 µs                                     |
+| **Two-Qubit Gates**    | Uses Mølmer–Sørensen or similar gates via motional coupling.                 | ~10–100 µs                                   |
+| **Measurement**        | Detect fluorescence to read quantum state.                                  | ~100 µs with >99% fidelity                   |
+| **Calibration Routines** | Includes Doppler cooling, trap tuning, coherence checks, sideband scans.   | Performed routinely to maintain high fidelity|
+
+---
+
+**Decoherence and Noise**
+
+| Source of Noise              | Description                                                                               | Typical Impact                                |
+|------------------------------|-------------------------------------------------------------------------------------------|------------------------------------------------|
+| **Magnetic Field Fluctuations** | Impacts phase coherence of hyperfine qubits.                                           | Coherence time reduced to ~10 ms – 10 s       |
+| **Laser Phase / Amplitude Noise** | Disturbs gate accuracy during qubit operations.                                     | Lowers gate fidelity                          |
+| **Electric Field Noise**     | Causes motional heating of ions in the trap.                                             | Reduces two-qubit gate reliability            |
+| **Spontaneous Emission**     | Occurs during off-resonant laser operations.                                             | Contributes to qubit decoherence              |
+| **Background Gas Collisions**| Leads to ion loss or state flip due to poor vacuum.                                      | Requires ultra-high vacuum (~10⁻¹¹ Torr)      |
+
+---
+
+**Key Properties of Ion-Trap Qubits**
+
+| Property                    | Typical Value / Range                            | Notes                                             |
+|-----------------------------|--------------------------------------------------|---------------------------------------------------|
+| **Qubit Coherence Time**    | ~10 ms to >1000 s                                | Among the highest in any qubit modality           |
+| **Single-Qubit Gate Fidelity** | >99.9%                                      | Extremely precise                                 |
+| **Two-Qubit Gate Fidelity** | >99%                                            | Constantly improving                              |
+| **Connectivity**            | All-to-all within a local trap                  | Facilitates efficient entanglement                |
+| **Temperature Requirement** | Room temperature (~300 K)                       | No cryogenics needed                              |
+| **Operation Mechanism**     | Laser or microwave-controlled gates             | Requires precise tuning and beam alignment        |
 
 **Companies working in developing Trapped Ions architecture**
 
@@ -62,7 +95,6 @@ Each trap has different uses. Penning traps can be used for precise magnetic mea
 
 ![Oxford Ionics](/assets/images/hardwares/OxfordIonics.png) 
 
-
 6. **Open Quantum Design**
 
 [Open Quantum Design](https://openquantumdesign.org/) Open Quantum Design (OQD) announced the world’s first open-source, full-stack, trapped-ion quantum computer providing access to global community to accelerate quantum research and bridge the gap between academia and Industry.
@@ -73,9 +105,7 @@ Each trap has different uses. Penning traps can be used for precise magnetic mea
 
 **Some other recent breakthroughs**
 
-IonQ introduced a [hybrid quantum classical architecture](https://arxiv.org/abs/2504.08732)to enhance LLM fine-tuning, where a pre-trained LLM is supplemented with a small set of training data to customize its functionality via quantum machine learning. 
-
-
+IonQ introduced a [hybrid quantum classical architecture](https://arxiv.org/abs/2504.08732) to enhance LLM fine-tuning, where a pre-trained LLM is supplemented with a small set of training data to customize its functionality via quantum machine learning. 
 
 **Some Insightful educational articles / sources**
 
@@ -83,6 +113,6 @@ IonQ introduced a [hybrid quantum classical architecture](https://arxiv.org/abs/
 
 2. [Applications of Ion traps](https://arxiv.org/pdf/1311.7220)
 
-
+---
 
 

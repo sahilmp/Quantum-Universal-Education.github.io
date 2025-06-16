@@ -50,6 +50,7 @@ Each trap has different uses. Penning traps can be used for precise magnetic mea
 
 ![Alpine Quantum Technology](/assets/images/hardwares/Alpine.png) 
 
+
 4. **Universal quantum**
 
 [Universal quantum](https://universalquantum.com/) published the first practical blueprint for a large-scale trapped ion systems.
@@ -57,6 +58,7 @@ Each trap has different uses. Penning traps can be used for precise magnetic mea
 5. **Oxford Ionics**
 
 [Oxford Ionics](https://www.oxionics.com/) works to achieve fault-tolerant quantum computing using trapped ion systems and they recently released a broad roadmap to achieve fault-tolerant quantum computing with the development of 10,000 + high-fidelity quantum processor in next 3 years. 
+
 
 ![Oxford Ionics](/assets/images/hardwares/OxfordIonics.png) 
 

@@ -24,7 +24,6 @@ Ultra-high vacuum chambers, Laser cooling setup, Optical tweezer array, Control 
 ![Schematic overview of cold atom quantum computer](/assets/images/hardwares/overview_coldatom_computer.png) [Reference of the image](https://epjquantumtechnology.springeropen.com/articles/10.1140/epjqt/s40507-023-00190-1)
 
 
-
 **Caliberation operations**
 
 | Operation              | Description                                                                 | Typical Time / Notes                         |

@@ -7,6 +7,7 @@ permalink: /hardware/nv-center-in-diamond/
 In pure diamond, every carbon atom is bonded in a tight 3-D network. Sometimes, one of the carbon atom is replaced by nitrogen atom (This is called as impurity) and the spot next to the nitrogen atom is a vacant spot but usually thats the spot where a carbon atom should be placed originally. That nitrogen + vacant spair becomes the NV center. This NV center is of high importance because in pure diamond the carbon atom has exactly 4  valence electrons and when carbon atom is replaced with a nitrogen atom there is one extra valence electron because nitrogen atom has 5 valence electrons. Thus, one electron doesnt have a pair inside the lattice. That spot becomes vacant. That vacant spot traps the electron in the defect. Together, they form a tiny **atom** inside the diamond that has unpaired electron spins and special energy levels. Due to their unique optical and spin properties, NV centers are among the most promising candidates for room-temperature solid-state qubits and quantum sensors.
 
 
+
 **Key properties of NV center in diamond**
 
 | **Property**              | **Details**                                                            |
@@ -26,7 +27,8 @@ In pure diamond, every carbon atom is bonded in a tight 3-D network. Sometimes, 
 
 
 
-The trapped electron in the NV center behaves like a small magnet with a spin. The spin state can be 0 or 1 for a two level qubit system. When you shine a green laser on NV center, photons are absorbed and emits fluroscence (usually red photons).If th electron is in 0 state, bright red light is emitted. If the electron is in 1 state, the fluorscence emitted is dimmer.
+The trapped electron in the NV center behaves like a small magnet with a spin. The spin state can be 0 or 1 for a two level qubit system. When you shine a green laser on NV center, photons are absorbed and emits fluroscence (usually red photons).If the electron is in 0 state, bright red light is emitted. If the electron is in 1 state, the fluorscence emitted is dimmer.
+
 
 When you apply microwave pulse electron spins can be changed. By adjusting the pulse length, power, and phase, you can perform precise “quantum gates” on that one NV qubit. The NV center’s electron spin is surprisingly well-isolated from the surrounding diamond, so it can stay “coherent” (i.e., keep its quantum state) for milliseconds at room temperature—long enough to do many logical operations or sensing tasks.
 

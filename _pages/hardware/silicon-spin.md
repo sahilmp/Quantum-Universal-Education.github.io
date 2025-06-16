@@ -1,27 +1,21 @@
----
+
 layout: page
 title: "Silicon Spin Qubits"
 permalink: /hardware/silicon-spin-qubits/
 tags:
   - hardware
   - qubit
----
-
 ## 1. Introduction
 
 A silicon qubit is the quantum-era cousin of the transistor. Instead of storing information with electrical charge (“0” or “1”), it uses the tiny magnetic orientation—called spin—of a single electron that’s trapped inside a nanoscale pocket (a “quantum dot”) etched in ordinary silicon.
 
 By applying precise voltages to gate electrodes, engineers can load an electron into the dot, flip its spin with microwave pulses, and entangle neighbouring spins to perform logic together. Because all of this uses the same CMOS fabrication tools as today’s chips, silicon spin qubits promise much smaller devices, lower power, and a scalable path to millions of qubits.
 
----
-
 ## 2. Physical Foundations
 
 - **Qubit Encoding**: Magnetic spin of a single electron in a nanoscale quantum-dot potential well.
 - **Spin Manipulation**: Microwave pulses flip spin; spin entanglement via exchange interactions.
 - **Fabrication**: Standard CMOS processes enable integration with classical semiconductor infrastructure.
-
----
 
 ## 3. Architecture & Design
 
@@ -35,8 +29,6 @@ By applying precise voltages to gate electrodes, engineers can load an electron 
 - Load electrons via voltage gates.
 - Spin control with resonant microwave pulses.
 - Readout through spin-to-charge conversion and detection circuits.
-
----
 
 ## 4. Companies & Startups
 
@@ -70,15 +62,11 @@ By applying precise voltages to gate electrodes, engineers can load an electron 
 10. **[XeedQ](https://xeedq.com/)**  
     Built XQ1: world’s first mobile multi-qubit processor using diamond spin qubits and exploring hybrid systems.
 
----
-
 ## 5. Applications
 
 - Quantum computing with dense qubit arrays  
 - Quantum simulation via silicon quantum dots  
 - Cryo-CMOS based integrated quantum control electronics  
-
----
 
 ## 6. Universities & Research Labs
 
@@ -88,15 +76,11 @@ By applying precise voltages to gate electrodes, engineers can load an electron 
 - **RWTH Aachen & Jülich**: Developed ARQUE spin-transport systems.
 - **TU Delft**: Though focused on other qubits, also contributed foundational silicon quantum-dot work.
 
----
-
 ## 7. Challenges & Scalability
 
 - Maintaining long coherence in multi-qubit layouts  
 - Integrating cryogenic and quantum electronics  
 - Ensuring yield and uniformity in CMOS-based fabrication  
-
----
 
 ## 8. Performance Metrics
 
@@ -104,13 +88,9 @@ By applying precise voltages to gate electrodes, engineers can load an electron 
 - High gate and readout fidelities (approaching fault-tolerance)  
 - Scalable CMOS-compatible qubit footprints  
 
----
-
 ## 9. Summary & Outlook
 
 Silicon spin qubits present a scalable, CMOS-compatible platform for future quantum processors. Backed by decades of semiconductor innovation and a growing ecosystem of startups and universities, they offer a pathway toward reliable, dense, and manufacturable quantum devices.
-
----
 
 ## 10. References
 

@@ -15,22 +15,68 @@ Oscillating voltages on specially shaped metal electrodes generate forces that k
 
 There are two ways to trap ions(charged particle). By using electric field and magnetic fields.
 
-1. **Paul traps (RF)** This trap uses the combination of static and oscillating electric field for confinement
-2. **Penning traps** This trap uses strong static electric and magnetic field for confinement.
+1. **Paul traps (RF)** 
+  - This trap uses the combination of static and oscillating electric field for confinement.
+
+  - Electrodes apply high-frequency voltages that switch back and forth rapidly.
+
+  - The ion never escapes because the electric field keeps flipping, pushing it back toward the center like a fast-moving fence.
+
+ **Pros**
+
+  - Compact and easier to build
+
+  - Widely used in quantum computers (like trapped-ion qubits)
+
+  - Good control over multiple ions
+
+**Cons**
+  
+   - Requires precise high-frequency driving
+
+   - Can heat up ions if not cooled properly
+
+![Paul trap experiment](/assets/images/hardwares/paul_traps.png) *Source: [Paul Trap in Action](https://alpha.web.cern.ch/gallery-images/paul-trap-action)*
+
+2. **Penning traps** 
+
+  - This trap uses strong static electric and magnetic field for confinement.
+
+  - The magnetic field makes ions spin in circles (cyclotron motion)
+
+  - The electric field keeps them from flying away along the axis
+
+**Pros**
+
+  - No need for oscillating voltages—uses steady fields
+
+  - Great for very stable and long-term ion storage
+
+  - Ideal for precision spectroscopy and mass measurements
+
+
+**Cons**
+
+   - Harder to scale for many qubits
+
+   - Complex magnetic field setup
 
 Each trap has different uses. Penning traps can be used for precise magnetic measurements in spectroscopy. Studies of quantum state manipulation most often use the Paul trap.
 
-**Applications of Ion traps**
+![Penning trap experiment](/assets/images/hardwares/penning_traps.png) *Source: [Novel Penning trap design delivers optical access for precise spectroscopy](https://www.aip.org/scilights/novel-penning-trap-design-delivers-optical-access-for-precise-spectroscopy)*
 
-1. Precision measurements in atomic physics
 
-2. Mass spectrometry
+**Key Properties of Ion-Trap Qubits**
 
-3. Anti-matter storage
+| Property                    | Typical Value / Range                            | Notes                                             |
+|-----------------------------|--------------------------------------------------|---------------------------------------------------|
+| **Qubit Coherence Time**    | ~10 ms to >1000 s                                | Among the highest in any qubit modality           |
+| **Single-Qubit Gate Fidelity** | >99.9%                                      | Extremely precise                                 |
+| **Two-Qubit Gate Fidelity** | >99%                                            | Constantly improving                              |
+| **Connectivity**            | All-to-all within a local trap                  | Facilitates efficient entanglement                |
+| **Temperature Requirement** | Room temperature (~300 K)                       | No cryogenics needed                              |
+| **Operation Mechanism**     | Laser or microwave-controlled gates             | Requires precise tuning and beam alignment        |
 
-4. Optical and microwave spectroscopy
-
-5. Laser cooling
 
 **Calibration Operations**
 
@@ -56,16 +102,18 @@ Each trap has different uses. Penning traps can be used for precise magnetic mea
 
 ---
 
-**Key Properties of Ion-Trap Qubits**
+**Applications of Ion traps**
 
-| Property                    | Typical Value / Range                            | Notes                                             |
-|-----------------------------|--------------------------------------------------|---------------------------------------------------|
-| **Qubit Coherence Time**    | ~10 ms to >1000 s                                | Among the highest in any qubit modality           |
-| **Single-Qubit Gate Fidelity** | >99.9%                                      | Extremely precise                                 |
-| **Two-Qubit Gate Fidelity** | >99%                                            | Constantly improving                              |
-| **Connectivity**            | All-to-all within a local trap                  | Facilitates efficient entanglement                |
-| **Temperature Requirement** | Room temperature (~300 K)                       | No cryogenics needed                              |
-| **Operation Mechanism**     | Laser or microwave-controlled gates             | Requires precise tuning and beam alignment        |
+1. Precision measurements in atomic physics
+
+2. Mass spectrometry
+
+3. Anti-matter storage
+
+4. Optical and microwave spectroscopy
+
+5. Laser cooling
+
 
 **Companies working in developing Trapped Ions architecture**
 

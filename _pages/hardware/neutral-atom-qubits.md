@@ -8,7 +8,7 @@ permalink: /hardware/neutral-atom-qubits/
 
 An atom has electrons, protons and neutrons. Electrons are negative charge, protons are positive charge and neutrons have no charge. If the number of electrons are equal to the number of protons then their charge cancel out and the atom is electrically neutral. This state of having equal protons and neutrons is what we call as neutral atoms. If you add or remove an electrons and if the count doesn't match with the protons, then the atom becomes an ion.
 
-**Physical principles of Neutral atoms**
+**Physical principles of Neutral atoms/ Key properties**
 
 Neutral-atom qubits encode information in two long-lived internal states of individual atoms, such as Rubidium-87, Cesium-133, or Strontium-87. Those internal states are called as hyperfine levels. 
 

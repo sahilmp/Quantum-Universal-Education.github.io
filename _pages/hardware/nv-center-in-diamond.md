@@ -21,7 +21,6 @@ In pure diamond, every carbon atom is bonded in a tight 3-D network. Sometimes, 
 
 
 
-
 ![NV center in diamond](/assets/images/hardwares/NV_center_vacancy.png) 
 [NV center in diamond](https://magnetometryrp.quantumtinkerer.tudelft.nl/1_NVbackground/) 
 

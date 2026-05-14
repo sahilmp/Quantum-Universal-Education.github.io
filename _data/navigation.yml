@@ -7,8 +7,10 @@ main:
     #    url: /tags/
   - title: "Journal Club"
     url: /journal-club/
-  - title: "QCE24 Workshop"
-    url: /qce24-workshop/
+  #- title: "QCE24 Workshop"
+  #  url: /qce24-workshop/
+  - title: "UnitaryHack26"
+  url: /unitaryhackday/
   #- title: "Anniversary"
   #  url: /anniversary/
   #- title: "Calendar"

@@ -7,6 +7,8 @@ Elliot the Electron:  BB84 Quantum Educational Game.  Teaches No-Cloning Theorem
 Built for [Quantum Universal Education](https://github.com/Quantum-Universal-Education) — unitaryHACK 2026  
 **Bounty:** Program a Quantum Game ($200) | **Issue:** #54
 
+Youtube: Demo Link: https://www.youtube.com/watch?v=pCbDTv2Wl2I
+
 ---
 
 ## 🎮 About the Game

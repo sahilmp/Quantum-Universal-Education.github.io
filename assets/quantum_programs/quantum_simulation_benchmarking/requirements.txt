@@ -1,0 +1,8 @@
+qiskit
+qiskit-aer
+cirq
+pennylane
+qibo
+amazon-braket-sdk
+matplotlib
+numpy

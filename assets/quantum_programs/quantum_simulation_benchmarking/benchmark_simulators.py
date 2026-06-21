@@ -3,13 +3,23 @@
 #
 # We describe ONE unoptimized circuit as a neutral list of gates, hand that exact
 # same circuit to five different simulators, and time how long each takes to run it.
-# Then we watch how that time grows as we add qubits and as we make the circuit deeper.
+# Then we look at three things:
+#   1. how the time scales as we add qubits and depth,
+#   2. how much memory a statevector needs (the 2^n wall),
+#   3. whether compiling the circuit with UCC first makes it simulate faster.
 #
 # The five simulators: Qiskit Aer, Cirq, PennyLane (default.qubit), Qibo, Amazon Braket.
+
+# Pin every backend to a single thread BEFORE numpy loads, so the comparison is fair
+# (Qiskit Aer would otherwise use every core while the pure-Python sims use one).
+import os
+for _var in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS", "NUMEXPR_NUM_THREADS"):
+    os.environ[_var] = "1"
 
 import time
 import csv
 import statistics
+import tracemalloc
 import warnings
 import numpy as np
 import matplotlib.pyplot as plt
@@ -18,12 +28,14 @@ warnings.filterwarnings("ignore")
 
 # Benchmark parameters
 seed = 1234
-warmups = 1          # Throw-away runs so caching / JIT does not pollute the first timing
+warmups = 2          # Throw-away runs so caching / JIT does not pollute the first timing
 repeats = 5          # Timed runs; we report the median
-qubit_sweep = [10, 12, 14, 16]   # Vary the number of qubits at fixed depth
-depth_sweep = [5, 10, 20, 40]    # Vary the depth at fixed number of qubits
-fixed_depth = 10                 # Depth used while sweeping qubits
-fixed_qubits = 12                # Qubits used while sweeping depth
+qubit_sweep = [10, 12, 14, 16, 18]   # Vary qubits at fixed depth
+depth_sweep = [5, 10, 20, 40]        # Vary depth at fixed qubits
+memory_sweep = [10, 14, 18, 22, 24]  # Statevector memory only (no simulation cost)
+fixed_depth = 10
+fixed_qubits = 12
+ucc_sizes = [12, 14, 16]             # Quantum Volume sizes for the compilation test
 
 
 def build_gate_list(num_qubits, depth):
@@ -47,6 +59,8 @@ def run_qiskit_aer(gates, num_qubits):
     for gate in gates:
         if gate[0] == "rx":
             circuit.rx(gate[2], gate[1])
+        elif gate[0] == "ry":
+            circuit.ry(gate[2], gate[1])
         elif gate[0] == "rz":
             circuit.rz(gate[2], gate[1])
         elif gate[0] == "cx":
@@ -63,6 +77,8 @@ def run_cirq(gates, num_qubits):
     for gate in gates:
         if gate[0] == "rx":
             circuit.append(cirq.rx(gate[2]).on(qubits[gate[1]]))
+        elif gate[0] == "ry":
+            circuit.append(cirq.ry(gate[2]).on(qubits[gate[1]]))
         elif gate[0] == "rz":
             circuit.append(cirq.rz(gate[2]).on(qubits[gate[1]]))
         elif gate[0] == "cx":
@@ -79,6 +95,8 @@ def run_pennylane(gates, num_qubits):
         for gate in gates:
             if gate[0] == "rx":
                 qml.RX(gate[2], wires=gate[1])
+            elif gate[0] == "ry":
+                qml.RY(gate[2], wires=gate[1])
             elif gate[0] == "rz":
                 qml.RZ(gate[2], wires=gate[1])
             elif gate[0] == "cx":
@@ -90,11 +108,14 @@ def run_pennylane(gates, num_qubits):
 
 
 def run_qibo(gates, num_qubits):
-    from qibo import Circuit, gates as qibo_gates
+    from qibo import Circuit, gates as qibo_gates, set_backend
+    set_backend("numpy")
     circuit = Circuit(num_qubits)
     for gate in gates:
         if gate[0] == "rx":
             circuit.add(qibo_gates.RX(gate[1], theta=gate[2]))
+        elif gate[0] == "ry":
+            circuit.add(qibo_gates.RY(gate[1], theta=gate[2]))
         elif gate[0] == "rz":
             circuit.add(qibo_gates.RZ(gate[1], theta=gate[2]))
         elif gate[0] == "cx":
@@ -109,6 +130,8 @@ def run_braket(gates, num_qubits):
     for gate in gates:
         if gate[0] == "rx":
             circuit.rx(gate[1], gate[2])
+        elif gate[0] == "ry":
+            circuit.ry(gate[1], gate[2])
         elif gate[0] == "rz":
             circuit.rz(gate[1], gate[2])
         elif gate[0] == "cx":
@@ -118,7 +141,7 @@ def run_braket(gates, num_qubits):
     return lambda: device.run(circuit).result()
 
 
-# Each simulator is registered by name, the way ucc-bench registers its compilers
+# Each simulator is registered by name, the way ucc-bench registers its backends
 simulators = {
     "qiskit_aer": run_qiskit_aer,
     "cirq": run_cirq,
@@ -144,22 +167,78 @@ def benchmark_point(num_qubits, depth):
     gates = build_gate_list(num_qubits, depth)
     row = {"qubits": num_qubits, "depth": depth}
     for name, builder in simulators.items():
-        execute = builder(gates, num_qubits)
-        row[name] = time_run(execute)
+        row[name] = time_run(builder(gates, num_qubits))
     return row
 
 
-def run_sweep(label, points):
+def statevector_memory(num_qubits):
+    # Peak memory of the 2^n complex amplitudes a statevector simulator must store
+    tracemalloc.start()
+    state = np.zeros(2 ** num_qubits, dtype=complex)
+    state[0] = 1.0
+    _, peak = tracemalloc.get_traced_memory()
+    tracemalloc.stop()
+    del state
+    return peak / 1e6  # megabytes
+
+
+# --- UCC compilation helpers ---------------------------------------------------
+
+def flatten_to_gate_list(circuit):
+    # Rewrite a Qiskit circuit into the rz/ry/cx gate set our simulators all speak,
+    # then read it back out as our neutral tuple list.
+    from qiskit import transpile
+    flat = transpile(circuit, basis_gates=["rz", "ry", "cx"], optimization_level=0)
+    gates = []
+    for instruction in flat.data:
+        name = instruction.operation.name
+        wires = [flat.find_bit(q).index for q in instruction.qubits]
+        params = instruction.operation.params
+        if name in ("rz", "ry"):
+            gates.append((name, wires[0], float(params[0])))
+        elif name == "cx":
+            gates.append(("cx", wires[0], wires[1]))
+    return gates
+
+
+def ucc_compilation_point(num_qubits):
+    # Compare simulating a Quantum Volume circuit before and after UCC compilation
+    from qiskit.circuit.library import quantum_volume
+    from ucc import compile as ucc_compile
+    circuit = quantum_volume(num_qubits, seed=seed)
+    raw_gates = flatten_to_gate_list(circuit)
+    compiled_gates = flatten_to_gate_list(ucc_compile(circuit))
+    row = {
+        "qubits": num_qubits,
+        "raw_gates": len(raw_gates),
+        "compiled_gates": len(compiled_gates),
+    }
+    for name, builder in simulators.items():
+        row[name + "_raw"] = time_run(builder(raw_gates, num_qubits))
+        row[name + "_compiled"] = time_run(builder(compiled_gates, num_qubits))
+    return row
+
+
+# --- runners ------------------------------------------------------------------
+
+def run_scaling_sweep(label, points):
     print("\n%s" % label)
-    header = "  %-7s %-7s " % ("qubits", "depth") + " ".join("%-11s" % n for n in simulators)
-    print(header)
+    print("  %-7s %-7s " % ("qubits", "depth") + " ".join("%-11s" % n for n in simulators))
     rows = []
     for num_qubits, depth in points:
         row = benchmark_point(num_qubits, depth)
         rows.append(row)
-        times = " ".join("%9.4fs" % row[n] for n in simulators)
-        print("  %-7d %-7d %s" % (num_qubits, depth, times))
+        print("  %-7d %-7d %s" % (num_qubits, depth,
+              " ".join("%9.4fs" % row[n] for n in simulators)))
     return rows
+
+
+def save_csv(rows, fieldnames, out_file):
+    with open(out_file, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+    print("Saved %d rows to %s" % (len(rows), out_file))
 
 
 def plot_sweep(rows, x_key, x_label, out_file, title):
@@ -176,28 +255,68 @@ def plot_sweep(rows, x_key, x_label, out_file, title):
     print("Saved plot to %s" % out_file)
 
 
-def save_csv(rows, out_file):
-    fieldnames = ["qubits", "depth"] + list(simulators)
-    with open(out_file, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(rows)
-    print("Saved %d rows to %s" % (len(rows), out_file))
-
-
 if __name__ == "__main__":
-    qubit_rows = run_sweep(
+    # 1. Scaling with qubit count and with depth
+    qubit_rows = run_scaling_sweep(
         "Scaling with qubit count (depth = %d)" % fixed_depth,
         [(n, fixed_depth) for n in qubit_sweep])
-    depth_rows = run_sweep(
+    depth_rows = run_scaling_sweep(
         "Scaling with circuit depth (qubits = %d)" % fixed_qubits,
         [(fixed_qubits, d) for d in depth_sweep])
 
-    save_csv(qubit_rows, "results_qubits.csv")
-    save_csv(depth_rows, "results_depth.csv")
-    plot_sweep(qubit_rows, "qubits", "Number of qubits",
-               "output_qubit_scaling.png",
+    save_csv(qubit_rows, ["qubits", "depth"] + list(simulators), "results_qubits.csv")
+    save_csv(depth_rows, ["qubits", "depth"] + list(simulators), "results_depth.csv")
+    plot_sweep(qubit_rows, "qubits", "Number of qubits", "output_qubit_scaling.png",
                "Execution time vs qubit count (depth = %d)" % fixed_depth)
-    plot_sweep(depth_rows, "depth", "Circuit depth",
-               "output_depth_scaling.png",
+    plot_sweep(depth_rows, "depth", "Circuit depth", "output_depth_scaling.png",
                "Execution time vs circuit depth (qubits = %d)" % fixed_qubits)
+
+    # 2. The memory wall
+    print("\nStatevector memory")
+    memory_rows = []
+    for num_qubits in memory_sweep:
+        megabytes = statevector_memory(num_qubits)
+        memory_rows.append({"qubits": num_qubits, "memory_mb": megabytes})
+        print("  %2d qubits -> %9.1f MB" % (num_qubits, megabytes))
+    save_csv(memory_rows, ["qubits", "memory_mb"], "results_memory.csv")
+    plt.plot([r["qubits"] for r in memory_rows], [r["memory_mb"] for r in memory_rows], marker="o")
+    plt.yscale("log")
+    plt.xlabel("Number of qubits")
+    plt.ylabel("Statevector memory (MB, log scale)")
+    plt.title("Memory needed to store the statevector")
+    plt.savefig("output_memory_scaling.png", dpi=120, bbox_inches="tight")
+    plt.close()
+    print("Saved plot to output_memory_scaling.png")
+
+    # 3. Does compiling with UCC make a circuit simulate faster?
+    print("\nUCC compilation effect on Quantum Volume (raw -> compiled)")
+    ucc_rows = []
+    for num_qubits in ucc_sizes:
+        row = ucc_compilation_point(num_qubits)
+        ucc_rows.append(row)
+        print("  %2d qubits: gates %4d -> %4d   aer %7.4fs -> %7.4fs   speedup x%.2f"
+              % (num_qubits, row["raw_gates"], row["compiled_gates"],
+                 row["qiskit_aer_raw"], row["qiskit_aer_compiled"],
+                 row["qiskit_aer_raw"] / row["qiskit_aer_compiled"]))
+    ucc_fields = ["qubits", "raw_gates", "compiled_gates"]
+    for name in simulators:
+        ucc_fields += [name + "_raw", name + "_compiled"]
+    save_csv(ucc_rows, ucc_fields, "results_ucc.csv")
+
+    # Plot the gate count, which is the clean reproducible win; wall-clock follows it
+    # but is small and noisy at these sizes (see the CSV for the raw/compiled times).
+    labels = [str(r["qubits"]) for r in ucc_rows]
+    positions = range(len(labels))
+    width = 0.35
+    raw_counts = [r["raw_gates"] for r in ucc_rows]
+    compiled_counts = [r["compiled_gates"] for r in ucc_rows]
+    plt.bar([p - width / 2 for p in positions], raw_counts, width, label="raw")
+    plt.bar([p + width / 2 for p in positions], compiled_counts, width, label="UCC compiled")
+    plt.xticks(list(positions), labels)
+    plt.xlabel("Number of qubits (Quantum Volume)")
+    plt.ylabel("Gate count")
+    plt.title("Gates a simulator must run, before vs after UCC compilation")
+    plt.legend()
+    plt.savefig("output_ucc_compilation.png", dpi=120, bbox_inches="tight")
+    plt.close()
+    print("Saved plot to output_ucc_compilation.png")

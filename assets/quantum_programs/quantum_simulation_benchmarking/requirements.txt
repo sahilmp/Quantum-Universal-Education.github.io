@@ -1,8 +1,11 @@
-qiskit
-qiskit-aer
-cirq
-pennylane
-qibo
-amazon-braket-sdk
-matplotlib
-numpy
+# Versions used to produce the numbers in the tutorial (Python 3.12).
+# Pinned so the benchmark reproduces; newer versions will usually work too.
+qiskit==2.4.2
+qiskit-aer==0.17.2
+cirq==1.6.1
+pennylane==0.45.0
+qibo==0.3.4
+amazon-braket-sdk==1.119.1
+ucc==0.4.12
+matplotlib==3.11.0
+numpy==2.4.6

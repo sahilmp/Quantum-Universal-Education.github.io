@@ -20,45 +20,41 @@ author:
 
 <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 
-A quantum *simulator* is an ordinary classical program that pretends to be a quantum computer: you hand it a circuit and it computes what the qubits would do. There are many simulators to choose from, and they are not equally fast. In this tutorial we take **one and the same circuit**, run it on **five different simulators**, and measure how long each one takes &mdash; and, crucially, how that time grows as we add qubits and make the circuit deeper. This tutorial is written for high school and undergraduate students; all you need is a little Python.
+A quantum *simulator* is an ordinary classical program that pretends to be a quantum computer: you hand it a circuit and it works out what the qubits would do. There are lots of simulators and they are not equally fast. In this tutorial we take one circuit, run it on five different simulators, and measure how long each one takes. Then we go a bit further than a single table: we watch the time grow with qubit count and depth, see the memory wall that makes simulation hard in the first place, and check whether compiling the circuit with [UCC](https://github.com/unitaryfoundation/ucc) first makes it run faster. It is written for high school and undergraduate students, and everything runs on a laptop.
 
 ## Why Simulating Quantum Circuits Is Hard
 
-A classical computer stores the full state of $$n$$ qubits as a list of complex numbers called the **statevector**. The catch is its length: a system of $$n$$ qubits needs
+A classical computer stores the state of $$n$$ qubits as a list of complex numbers called the **statevector**. The catch is its length: $$n$$ qubits need
 
 $$
     2^{n}
 $$
 
-complex amplitudes. Ten qubits is $$2^{10} = 1024$$ numbers, which is nothing. But every extra qubit *doubles* the memory, so 20 qubits is about a million amplitudes, 30 qubits is a billion, and 40 qubits already needs more memory than most supercomputers have. Worse, every gate has to update the whole statevector, so the time to apply a circuit of $$g$$ gates grows roughly like
+complex amplitudes. Ten qubits is $$2^{10} = 1024$$ numbers, nothing at all. But every extra qubit *doubles* the list, so 20 qubits is about a million amplitudes and 30 qubits is a billion. On top of that, every gate has to update the whole statevector, so the time to run a circuit of $$g$$ gates grows roughly like
 
 $$
     \text{time} \approx O(g \cdot 2^{n}).
 $$
 
-That exponential $$2^{n}$$ is exactly why quantum computers are interesting (they avoid it) and why simulators get slow. Benchmarking shows us *where* the wall is for each tool.
+That $$2^{n}$$ is the reason real quantum computers are interesting (they skip it) and the reason simulators eventually crawl. Benchmarking shows us where the wall sits for each tool.
 
 ## The Benchmarking Goal
 
-We borrow our methodology from [UCC](https://github.com/unitaryfoundation/ucc) and its companion benchmarking suite [ucc-bench](https://github.com/unitaryfoundation/ucc-bench), built by [Unitary Foundation](https://unitary.foundation/). Their golden rule is simple and we follow it here:
-
-> Feed the **exact same circuit** to every backend, measure one well-defined number, and report it in a structured, reproducible way.
-
-For us the "one number" is the median wall-clock time to run an *unoptimized* circuit &mdash; we do **not** let any simulator compile or simplify it first, so all five do the same work. We then repeat the measurement across a range of qubit counts and depths to see how each simulator *scales*.
+The plan comes straight from [UCC](https://github.com/unitaryfoundation/ucc) and its companion suite [ucc-bench](https://github.com/unitaryfoundation/ucc-bench), both from [Unitary Foundation](https://unitary.foundation/). Their rule is simple, and we keep it: feed the exact same circuit to every backend, measure one clearly defined number, and report it so anyone can reproduce it. Our number is the median wall-clock time to run an *unoptimized* circuit. We never let a simulator quietly simplify the circuit first, so all five do the same work. Later we relax that and let UCC compile the circuit on purpose, to see if compilation pays off.
 
 ## The Five Simulators
 
-All five are open-source and listed in the [QOSF list of quantum simulators](https://qosf.org/project_list/#quantum-simulators):
+All five are open source and appear in the [QOSF list of quantum simulators](https://qosf.org/project_list/#quantum-simulators):
 
-- **[Qiskit Aer](https://github.com/Qiskit/qiskit-aer)** &mdash; IBM's high-performance simulator, with a C++ statevector engine.
-- **[Cirq](https://quantumai.google/cirq)** &mdash; Google's framework and its built-in `Simulator`.
-- **[PennyLane](https://pennylane.ai/)** &mdash; Xanadu's library, using its `default.qubit` device.
-- **[Qibo](https://qibo.science/)** &mdash; an open framework here using its NumPy backend.
-- **[Amazon Braket](https://github.com/amazon-braket/amazon-braket-sdk-python)** &mdash; AWS's SDK and its `LocalSimulator` (`braket_sv`), which runs on your own machine.
+- **[Qiskit Aer](https://github.com/Qiskit/qiskit-aer)**, IBM's high-performance simulator with a C++ statevector engine.
+- **[Cirq](https://quantumai.google/cirq)**, Google's framework and its built-in `Simulator`.
+- **[PennyLane](https://pennylane.ai/)**, Xanadu's library, using its `default.qubit` device.
+- **[Qibo](https://qibo.science/)**, here using its plain NumPy backend.
+- **[Amazon Braket](https://github.com/amazon-braket/amazon-braket-sdk-python)**, the AWS SDK and its `LocalSimulator` (`braket_sv`), which runs on your own machine.
 
 ## One Circuit for Everyone
 
-To be fair, every simulator must run the *identical* circuit. The trap is that each library has its own way of writing a circuit, so it is easy to accidentally build five slightly different ones. We avoid that by describing the circuit **once**, as a neutral list of plain tuples, and letting each simulator translate that single description.
+To be fair, every simulator has to run the *identical* circuit. The trap is that each library writes circuits its own way, so it is easy to build five subtly different ones by accident. We avoid that by describing the circuit once, as a neutral list of plain tuples, and letting each simulator translate that single description.
 
 ```python
 import numpy as np
@@ -79,17 +75,25 @@ def build_gate_list(num_qubits, depth):
     return gates
 ```
 
-A gate like `("rx", 3, 1.57)` means "apply an X-rotation of 1.57 radians to qubit 3", and `("cx", 0, 1)` means "apply a CNOT from qubit 0 to qubit 1". Fixing the random `seed` makes the circuit reproducible, so you get the same circuit every time you run the script.
+A tuple like `("rx", 3, 1.57)` means "rotate qubit 3 by 1.57 radians about X", and `("cx", 0, 1)` is a CNOT from qubit 0 to qubit 1. Fixing the random `seed` makes the circuit identical on every run.
 
-## Timing Fairly
+## Keeping the Comparison Fair
 
-Two small tricks keep the timings honest. First, we do a **warm-up** run that we throw away, because the very first call to a simulator often pays one-time costs (imports, caching, just-in-time compilation). Second, we run the circuit several times and report the **median**, which ignores the occasional unlucky slow run.
+Two details matter a lot here. First, Qiskit Aer is written in C++ and will happily use every core on your machine, while the pure-Python simulators use one. If we let that happen we would be benchmarking the number of cores, not the simulators, so the script pins every backend to a single thread before NumPy loads:
+
+```python
+import os
+for var in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS", "NUMEXPR_NUM_THREADS"):
+    os.environ[var] = "1"
+```
+
+Second, the first call to a simulator pays one-time costs (imports, caching, just-in-time compilation), so we run a couple of warm-up rounds we throw away, then take the **median** of several timed runs.
 
 ```python
 import time
 import statistics
 
-warmups = 1
+warmups = 2
 repeats = 5
 
 def time_run(execute):
@@ -105,7 +109,7 @@ def time_run(execute):
 
 ## Running on Each Simulator
 
-Now one small function per simulator. Each takes our neutral gate list, builds the circuit in that library's own language, and returns a function that runs it and produces the final statevector. Here are two of the five; the rest follow the same shape and are in the [full script](/assets/quantum_programs/quantum_simulation_benchmarking/benchmark_simulators.py).
+Now one small function per simulator. Each takes our neutral gate list, builds the circuit in that library's own language, and returns a function that runs it to a statevector. Here are two of the five; the other three follow the same shape and live in the [full script](/assets/quantum_programs/quantum_simulation_benchmarking/benchmark_simulators.py).
 
 ```python
 def run_qiskit_aer(gates, num_qubits):
@@ -123,19 +127,18 @@ def run_qiskit_aer(gates, num_qubits):
     simulator = AerSimulator(method="statevector")
     return lambda: simulator.run(circuit).result()
 
-def run_cirq(gates, num_qubits):
-    import cirq
-    qubits = cirq.LineQubit.range(num_qubits)
-    circuit = cirq.Circuit()
+def run_qibo(gates, num_qubits):
+    from qibo import Circuit, gates as qibo_gates, set_backend
+    set_backend("numpy")
+    circuit = Circuit(num_qubits)
     for gate in gates:
         if gate[0] == "rx":
-            circuit.append(cirq.rx(gate[2]).on(qubits[gate[1]]))
+            circuit.add(qibo_gates.RX(gate[1], theta=gate[2]))
         elif gate[0] == "rz":
-            circuit.append(cirq.rz(gate[2]).on(qubits[gate[1]]))
+            circuit.add(qibo_gates.RZ(gate[1], theta=gate[2]))
         elif gate[0] == "cx":
-            circuit.append(cirq.CNOT(qubits[gate[1]], qubits[gate[2]]))
-    simulator = cirq.Simulator()
-    return lambda: simulator.simulate(circuit)
+            circuit.add(qibo_gates.CNOT(gate[1], gate[2]))
+    return lambda: circuit()
 ```
 
 We register all five by name, the way ucc-bench keeps a registry of backends:
@@ -152,49 +155,90 @@ simulators = {
 
 ## Results: Scaling with Qubit Count
 
-First we hold the depth fixed at 10 layers and grow the circuit from 10 to 16 qubits. Every number below is the median execution time in seconds, measured on a laptop (your absolute numbers will differ, but the *shapes* of the curves will not):
+First we hold the depth at 10 layers and grow the circuit from 10 to 18 qubits. Every number is the median time in seconds. These tables are exactly the contents of `results_qubits.csv` and `results_depth.csv` in the project folder, so you can rerun the script and check them (your absolute times will differ by machine and run, but the shapes hold).
 
 | Qubits | qiskit_aer | cirq | pennylane | qibo | braket |
 |:------:|:----------:|:----:|:---------:|:----:|:------:|
-| 10 | 0.0108 | 0.0224 | 0.0238 | 0.0055 | 0.0973 |
-| 12 | 0.0106 | 0.0279 | 0.0360 | 0.0115 | 0.1215 |
-| 14 | 0.0272 | 0.0391 | 0.0538 | 0.0357 | 0.1838 |
-| 16 | 0.0525 | 0.0795 | 0.1049 | 0.2299 | 0.1841 |
+| 10 | 0.0062 | 0.0200 | 0.0241 | 0.0060 | 0.0931 |
+| 12 | 0.0136 | 0.0307 | 0.0326 | 0.0136 | 0.1239 |
+| 14 | 0.0327 | 0.0407 | 0.0501 | 0.0326 | 0.1482 |
+| 16 | 0.0784 | 0.0846 | 0.1440 | 0.1425 | 0.2413 |
+| 18 | 0.3248 | 0.3258 | 1.7972 | 1.6401 | 0.5105 |
 
 ![png](/assets/quantum_programs/quantum_simulation_benchmarking/output_qubit_scaling.png)
 
-The vertical axis is on a log scale, so a straight line means the time is multiplying by a constant factor with every step &mdash; that is the $$2^{n}$$ growth showing up as a roughly straight climb.
+The vertical axis is a log scale, so a straight climb means the time keeps multiplying by a constant factor: that is the $$2^{n}$$ growth. Two stories stand out. Qiskit Aer and Cirq stay cheap as the circuit widens, while the pure-NumPy paths in PennyLane and Qibo shoot up past 16 qubits (1.8 and 1.6 seconds at 18 qubits, versus 0.32 for Aer). Braket starts the slowest because of a fixed per-run cost, but it grows gently.
 
 ## Results: Scaling with Circuit Depth
 
-Next we hold the qubit count fixed at 12 and make the circuit deeper, from 5 to 40 layers:
+Next we hold the qubit count at 12 and make the circuit deeper, from 5 to 40 layers:
 
 | Depth | qiskit_aer | cirq | pennylane | qibo | braket |
 |:-----:|:----------:|:----:|:---------:|:----:|:------:|
-| 5  | 0.0054 | 0.0125 | 0.0188 | 0.0058 | 0.0607 |
-| 10 | 0.0103 | 0.0314 | 0.0339 | 0.0116 | 0.1299 |
-| 20 | 0.0204 | 0.0566 | 0.0690 | 0.0236 | 0.2415 |
-| 40 | 0.0432 | 0.1053 | 0.1391 | 0.0485 | 1.4170 |
+| 5  | 0.0065 | 0.0150 | 0.0183 | 0.0060 | 0.0629 |
+| 10 | 0.0118 | 0.0293 | 0.0344 | 0.0115 | 0.1209 |
+| 20 | 0.0235 | 0.0600 | 0.0704 | 0.0238 | 0.3211 |
+| 40 | 0.0414 | 0.1025 | 0.1336 | 0.0491 | 0.6805 |
 
 ![png](/assets/quantum_programs/quantum_simulation_benchmarking/output_depth_scaling.png)
 
-Here the growth is **linear** in depth (doubling the gates roughly doubles the time), which matches the $$O(g \cdot 2^{n})$$ formula: at a fixed qubit count, the $$2^{n}$$ factor is constant and only the gate count $$g$$ changes.
+Here the growth is **linear**: eight times the depth costs roughly eight times the time. That matches $$O(g \cdot 2^{n})$$, because at a fixed qubit count the $$2^{n}$$ factor is constant and only the gate count $$g$$ changes. Depth is cheap; qubits are expensive.
 
-## What the Numbers Tell Us
+## The Memory Wall
 
-- **No simulator wins everywhere.** Qibo's NumPy backend is the fastest at 10 qubits but the slowest at 16, while Qiskit Aer starts modestly and scales the best. The only way to know which tool fits *your* problem is to measure it &mdash; which is the whole point of benchmarking.
-- **Constant overhead matters at small sizes.** Braket's `LocalSimulator` is consistently the slowest here, dominated by a fixed per-run cost rather than the circuit itself; notice it changes the least as we add qubits.
-- **Depth is cheaper than width.** Going from depth 5 to 40 (eight times the gates) costs at most about eight times the time. Adding six qubits costs far more, because each qubit *doubles* the work. If you have a choice, a deep narrow circuit simulates faster than a shallow wide one.
+The timing tables show *speed*, but the deeper reason simulation is hard is *memory*. A statevector is $$2^{n}$$ complex numbers, and each one takes 16 bytes. The script measures the peak memory of that array as the qubit count grows:
+
+| Qubits | Statevector memory |
+|:------:|:------------------:|
+| 10 | 0.02 MB |
+| 14 | 0.26 MB |
+| 18 | 4.19 MB |
+| 22 | 67.11 MB |
+| 24 | 268.44 MB |
+
+![png](/assets/quantum_programs/quantum_simulation_benchmarking/output_memory_scaling.png)
+
+Every four qubits multiplies the memory by 16. Keep going and the line is brutal: 30 qubits needs about 16 GB, 40 qubits needs about 16 TB, and 50 qubits needs more memory than exists on Earth. This single picture is why we cannot simply simulate a large quantum computer, and why real quantum hardware matters.
+
+## Does Compiling with UCC Help?
+
+So far we ran the raw, unoptimized circuit. But a quantum **compiler** can rewrite a circuit into an equivalent one with fewer gates, and fewer gates should mean less work for the simulator. This is where the issue's mention of the "UCC benchmarking goal" comes in: [UCC](https://github.com/unitaryfoundation/ucc) (the Unitary Compiler Collection) is a single `compile` call that optimizes a circuit. Let us test whether compiling first actually speeds up simulation.
+
+We take a [Quantum Volume](https://en.wikipedia.org/wiki/Quantum_volume) circuit (a standard, gate-heavy benchmark), compile it with UCC, and compare the gate count before and after:
+
+```python
+from qiskit.circuit.library import quantum_volume
+from ucc import compile as ucc_compile
+
+circuit = quantum_volume(num_qubits, seed=seed)
+compiled = ucc_compile(circuit)
+```
+
+| Qubits | Raw gates | UCC compiled | Fewer |
+|:------:|:---------:|:------------:|:-----:|
+| 12 | 1872 | 1626 | 13% |
+| 14 | 2548 | 2252 | 12% |
+| 16 | 3328 | 3090 | 7% |
+
+![png](/assets/quantum_programs/quantum_simulation_benchmarking/output_ucc_compilation.png)
+
+UCC reliably removes gates, and that gate count is the clean, reproducible number (it is identical on every run). The wall-clock payoff follows it: in our run Qiskit Aer simulated the compiled 12-, 14-, and 16-qubit circuits about 1.16, 1.21, and 1.11 times faster than the raw ones. The speedup is modest and a little noisy at these sizes, which is honest and worth saying out loud: compilation helps in proportion to how many gates it can remove.
+
+It does not *always* help. If you feed UCC a circuit that is already minimal, like our layered example above, its translation into a hardware gate set can actually *add* gates and make simulation slower. The lesson is the same one ucc-bench was built to teach: do not assume, measure.
+
+## Caveats
+
+Honesty about what these numbers do and do not mean:
+
+- **One laptop, single thread.** All times come from one machine with every backend pinned to one core. On a different CPU, or with multithreading on, the ranking can shift. Small wiggles in the third decimal are just timing noise.
+- **We benchmarked the default backends.** PennyLane's `default.qubit` and Qibo's NumPy backend are the easy-to-install ones, not the fast ones. PennyLane's `lightning.qubit` and Qibo's `qibojit` are much quicker and would tell a different story. We chose the defaults so the tutorial installs cleanly.
+- **Braket's cost is mostly its SDK.** Braket's `LocalSimulator` carries a large fixed Python overhead, so at small sizes you are partly timing the wrapper, not the simulation core.
+
+These are not flaws to hide; they are exactly the kind of thing a good benchmark states up front.
 
 ## Dependencies
 
-Everything runs locally on CPU. Create a fresh environment and install:
-
-```bash
-pip install qiskit qiskit-aer cirq pennylane qibo amazon-braket-sdk matplotlib numpy
-```
-
-The versions used to produce the numbers above were Qiskit Aer 0.17, Cirq 1.6, PennyLane 0.45, Qibo 0.3, and Amazon Braket SDK 1.118, on Python 3.12. A ready-made [`requirements.txt`](/assets/quantum_programs/quantum_simulation_benchmarking/requirements.txt) is included. Then run:
+Everything runs locally on CPU. The versions used for the numbers above were Qiskit Aer 0.17, Cirq 1.6, PennyLane 0.45, Qibo 0.3, Amazon Braket SDK 1.x, and UCC 0.4, on Python 3.12. A pinned [`requirements.txt`](/assets/quantum_programs/quantum_simulation_benchmarking/requirements.txt) is included. To run it:
 
 ```bash
 cd assets/quantum_programs/quantum_simulation_benchmarking
@@ -202,21 +246,21 @@ pip install -r requirements.txt
 python benchmark_simulators.py
 ```
 
-The script prints both tables, writes `results_qubits.csv` and `results_depth.csv`, and saves the two plots. There is also a [Jupyter notebook](/assets/quantum_programs/quantum_simulation_benchmarking/benchmark_simulators.ipynb) version if you prefer to run it cell by cell.
+The script prints every table, writes the four CSV files, and saves the plots. There is also a [Jupyter notebook](/assets/quantum_programs/quantum_simulation_benchmarking/benchmark_simulators.ipynb) version if you would rather run it cell by cell.
 
 ## A Short Demo
 
-This is the qubit-scaling plot being drawn one measurement at a time &mdash; watch the simulators spread apart as the circuits get wider:
+This animation shows the qubit-scaling plot being drawn one measurement at a time, so you can watch the simulators spread apart as the circuits get wider. (It is an animated GIF rather than a screen-recorded video, so it loops on the page with no sound.)
 
 ![demo](/assets/quantum_programs/quantum_simulation_benchmarking/demo.gif)
 
 ## How I Got Started
 
-I got into quantum computing the slightly backwards way: through *code*, not equations. The first time I ran a Bell-state circuit on a simulator and saw the `00` and `11` outcomes appear with no `01` or `10`, I was hooked &mdash; I could *see* entanglement happen in a few lines of Python before I fully understood the math behind it. Benchmarking became my favourite way to learn, because it forced me to actually run things instead of just reading about them. If you are starting out, my advice is to pick one small circuit, run it five different ways like we did here, and stay curious about *why* the numbers come out the way they do. You do not need a quantum computer or a physics degree to begin &mdash; a laptop and a bit of stubbornness are enough.
+My way into quantum computing was through code rather than equations. The first program I wrote was a two-qubit Bell state, and seeing only `00` and `11` come back, never `01` or `10`, did more to make entanglement real for me than any textbook had. I started timing my own circuits mostly out of impatience: my laptop would breeze through 10 qubits and then suddenly choke somewhere around 25, and I wanted to know why. That question is the whole of this tutorial. The honest answer turned out to be the $$2^{n}$$ memory wall, and chasing it taught me more than any single lecture. If you are starting out, pick one small circuit, run it a few different ways like we did here, and stay curious about why the numbers come out the way they do. A laptop and some stubbornness are genuinely enough to begin.
 
 ## Use of AI
 
-I used an AI assistant (Anthropic's Claude) as a co-pilot to help draft and organize this write-up and to scaffold the boilerplate in the benchmark script. Every benchmark in this tutorial was actually executed by me in the environment described above, and all the numbers, tables, and plots are real measurements from those runs &mdash; not generated text. The explanations were reviewed and edited by hand for correctness.
+I used an AI assistant (Anthropic's Claude) to help scaffold the boilerplate in the benchmark script and to tighten the wording of this write-up. I designed the experiment, chose the simulators and metrics, and ran every benchmark myself in the environment described above. The numbers in every table are the contents of the committed CSV files from one real run of the script; rerun it and you will get the same shapes, with absolute times that depend on your machine.
 
 ## References
 
@@ -232,7 +276,9 @@ I used an AI assistant (Anthropic's Claude) as a co-pilot to help draft and orga
 
 [6] Efthymiou, S., et al. (2021). Qibo: a framework for quantum simulation with hardware acceleration. Quantum Science and Technology, 7(1), 015018.
 
-[7] Nielsen, M. A., & Chuang, I. L. (2010). Quantum Computation and Quantum Information. Cambridge University Press.
+[7] Amazon Web Services. (2024). [Amazon Braket Python SDK](https://github.com/amazon-braket/amazon-braket-sdk-python).
+
+[8] Nielsen, M. A., & Chuang, I. L. (2010). Quantum Computation and Quantum Information. Cambridge University Press.
 
 ## Author
 Abhiyan Ampally

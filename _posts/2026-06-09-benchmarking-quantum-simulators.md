@@ -250,7 +250,13 @@ The script prints every table, writes the four CSV files, and saves the plots. T
 
 ## A Short Demo
 
-This animation shows the qubit-scaling plot being drawn one measurement at a time, so you can watch the simulators spread apart as the circuits get wider. (It is an animated GIF rather than a screen-recorded video, so it loops on the page with no sound.)
+A short (silent) video walkthrough of the main results: the circuit grows qubit by qubit, the simulators spread apart, and then the memory wall shows why it all gets hard. The [`demo.mp4`](/assets/quantum_programs/quantum_simulation_benchmarking/demo.mp4) file is in the project folder.
+
+<video controls muted loop width="640" src="/assets/quantum_programs/quantum_simulation_benchmarking/demo.mp4">
+  Your browser cannot play the video. <a href="/assets/quantum_programs/quantum_simulation_benchmarking/demo.mp4">Download demo.mp4</a> instead.
+</video>
+
+The same animation as a looping GIF, in case the video does not play inline:
 
 ![demo](/assets/quantum_programs/quantum_simulation_benchmarking/demo.gif)
 

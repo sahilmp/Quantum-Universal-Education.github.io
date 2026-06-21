@@ -151,6 +151,105 @@ simulators = {
 }
 
 
+# --- correctness: do the five simulators actually agree? ----------------------
+
+# Qiskit numbers qubits one way and the others the opposite way, so to compare
+# statevectors we put them all in Qiskit's order by reversing the qubit axis.
+reversed_qubit_order = {"cirq", "pennylane", "qibo", "braket"}
+
+
+def to_qiskit_order(state, name, num_qubits):
+    state = np.asarray(state).ravel().astype(complex)
+    if name in reversed_qubit_order:
+        state = state.reshape([2] * num_qubits).transpose(range(num_qubits - 1, -1, -1)).ravel()
+    return state / np.linalg.norm(state)
+
+
+def final_state(name, gates, num_qubits):
+    # Run the circuit on one simulator and pull out the final statevector
+    if name == "qiskit_aer":
+        from qiskit import QuantumCircuit
+        from qiskit_aer import AerSimulator
+        circuit = QuantumCircuit(num_qubits)
+        for gate in gates:
+            if gate[0] == "rx":
+                circuit.rx(gate[2], gate[1])
+            elif gate[0] == "rz":
+                circuit.rz(gate[2], gate[1])
+            elif gate[0] == "cx":
+                circuit.cx(gate[1], gate[2])
+        circuit.save_statevector()
+        result = AerSimulator(method="statevector").run(circuit).result()
+        state = result.get_statevector().data
+    elif name == "cirq":
+        import cirq
+        qubits = cirq.LineQubit.range(num_qubits)
+        circuit = cirq.Circuit()
+        for gate in gates:
+            if gate[0] == "rx":
+                circuit.append(cirq.rx(gate[2]).on(qubits[gate[1]]))
+            elif gate[0] == "rz":
+                circuit.append(cirq.rz(gate[2]).on(qubits[gate[1]]))
+            elif gate[0] == "cx":
+                circuit.append(cirq.CNOT(qubits[gate[1]], qubits[gate[2]]))
+        state = cirq.Simulator().simulate(circuit).final_state_vector
+    elif name == "pennylane":
+        import pennylane as qml
+        device = qml.device("default.qubit", wires=num_qubits)
+
+        def circuit():
+            for gate in gates:
+                if gate[0] == "rx":
+                    qml.RX(gate[2], wires=gate[1])
+                elif gate[0] == "rz":
+                    qml.RZ(gate[2], wires=gate[1])
+                elif gate[0] == "cx":
+                    qml.CNOT(wires=[gate[1], gate[2]])
+            return qml.state()
+
+        state = qml.QNode(circuit, device)()
+    elif name == "qibo":
+        from qibo import Circuit, gates as qibo_gates, set_backend
+        set_backend("numpy")
+        circuit = Circuit(num_qubits)
+        for gate in gates:
+            if gate[0] == "rx":
+                circuit.add(qibo_gates.RX(gate[1], theta=gate[2]))
+            elif gate[0] == "rz":
+                circuit.add(qibo_gates.RZ(gate[1], theta=gate[2]))
+            elif gate[0] == "cx":
+                circuit.add(qibo_gates.CNOT(gate[1], gate[2]))
+        state = circuit().state()
+    elif name == "braket":
+        from braket.circuits import Circuit
+        from braket.devices import LocalSimulator
+        circuit = Circuit()
+        for gate in gates:
+            if gate[0] == "rx":
+                circuit.rx(gate[1], gate[2])
+            elif gate[0] == "rz":
+                circuit.rz(gate[1], gate[2])
+            elif gate[0] == "cx":
+                circuit.cnot(gate[1], gate[2])
+        circuit.state_vector()
+        state = LocalSimulator("braket_sv").run(circuit).result().values[0]
+    return to_qiskit_order(state, name, num_qubits)
+
+
+def check_agreement(num_qubits, depth):
+    # A benchmark you can trust: confirm every simulator computes the SAME state.
+    # Fidelity |<a|b>|^2 should be 1 (it ignores an irrelevant global phase).
+    gates = build_gate_list(num_qubits, depth)
+    reference = final_state("qiskit_aer", gates, num_qubits)
+    worst = 1.0
+    for name in simulators:
+        state = final_state(name, gates, num_qubits)
+        fidelity = abs(np.vdot(reference, state)) ** 2
+        worst = min(worst, fidelity)
+        print("  %-11s fidelity vs qiskit_aer = %.12f" % (name, fidelity))
+    print("  -> all five agree (largest infidelity %.1e)" % (1 - worst))
+
+
 def time_run(execute):
     # Warm up, then return the median wall-clock time over several timed runs
     for _ in range(warmups):
@@ -255,7 +354,46 @@ def plot_sweep(rows, x_key, x_label, out_file, title):
     print("Saved plot to %s" % out_file)
 
 
+def gates_in_circuit(num_qubits, depth):
+    # Two single-qubit rotations per qubit plus an (n-1)-long CNOT ladder, per layer
+    return depth * (2 * num_qubits + (num_qubits - 1))
+
+
+def fit_scaling(qubit_rows, depth):
+    # Fit time ~ C * (gates * 2^n) + overhead, then predict where each simulator
+    # crosses one second, one minute, and runs out of 16 GB of memory.
+    ram_bytes = 16e9
+    work = np.array([gates_in_circuit(r["qubits"], depth) * 2 ** r["qubits"] for r in qubit_rows])
+    rows = []
+    print("\nScaling fit  (time ~ C * gates * 2^n)   and predictions")
+    print("  %-11s %-10s %-6s %-8s %-9s %-9s" % ("simulator", "C", "R^2", "1 second", "1 minute", "16GB OOM"))
+    for name in simulators:
+        times = np.array([r[name] for r in qubit_rows])
+        slope, intercept = np.polyfit(work, times, 1)
+        predicted = slope * work + intercept
+        r_squared = 1 - np.sum((times - predicted) ** 2) / np.sum((times - times.mean()) ** 2)
+
+        def qubits_for(target):
+            for n in range(8, 41):
+                if slope * gates_in_circuit(n, depth) * 2 ** n + intercept >= target:
+                    return n
+            return 40
+        oom = next(n for n in range(8, 60) if 2 ** n * 16 > ram_bytes)
+        row = {"simulator": name, "C": slope, "r_squared": r_squared,
+               "one_second_qubits": qubits_for(1.0), "one_minute_qubits": qubits_for(60.0),
+               "oom_qubits": oom}
+        rows.append(row)
+        print("  %-11s %.2e   %.3f  %-8d %-9d %-9d"
+              % (name, slope, r_squared, row["one_second_qubits"],
+                 row["one_minute_qubits"], oom))
+    return rows
+
+
 if __name__ == "__main__":
+    # 0. A benchmark you can trust: confirm every simulator computes the same state
+    print("Correctness check (8 qubits, depth 5)")
+    check_agreement(8, 5)
+
     # 1. Scaling with qubit count and with depth
     qubit_rows = run_scaling_sweep(
         "Scaling with qubit count (depth = %d)" % fixed_depth,
@@ -320,3 +458,9 @@ if __name__ == "__main__":
     plt.savefig("output_ucc_compilation.png", dpi=120, bbox_inches="tight")
     plt.close()
     print("Saved plot to output_ucc_compilation.png")
+
+    # 4. Turn the qubit-scaling data into a predictive model
+    scaling_rows = fit_scaling(qubit_rows, fixed_depth)
+    save_csv(scaling_rows,
+             ["simulator", "C", "r_squared", "one_second_qubits", "one_minute_qubits", "oom_qubits"],
+             "results_scaling.csv")

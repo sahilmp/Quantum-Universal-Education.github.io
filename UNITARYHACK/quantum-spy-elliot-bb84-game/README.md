@@ -149,7 +149,7 @@ MIT License
 
 - **GitHub:** [learningdungeon](https://github.com/learningdungeon)
 - **Sentinel Framework DOI:** [10.5281/zenodo.20464416](https://doi.org/10.5281/zenodo.20464416)
-- **YouTube Demo:** [https://www.youtube.com/watch?v=pCbDTv2Wl2I](https://www.youtube.com/watch?v=pCbDTv2Wl2I)
+- **YouTube Demo:** [(https://youtu.be/heWKj15SbZA?si=gY2ZECKE_daStrji)
 - **Quantum Universal Education:** [Repo](https://github.com/Quantum-Universal-Education/Quantum-Universal-Education.github.io)
 
 ---

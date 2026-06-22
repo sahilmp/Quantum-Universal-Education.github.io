@@ -3,7 +3,7 @@
 An interactive educational quantum game teaching the BB84 protocol, quantum cryptography, and the No-Cloning Theorem.
 
 Built for Quantum Universal Education — unitaryHACK 2026
-Bounty: Program a Quantum Game ($200)
+Bounty: Program a Quantum Game ($200) | Issue: #54
 
 ---
 
@@ -23,14 +23,14 @@ Over many rounds, players learn how the laws of quantum mechanics make secure qu
 
 # 🧠 What Players Learn
 
-| Concept               | Description                                                              |
-| --------------------- | ------------------------------------------------------------------------ |
-| Superposition         | A qubit can exist in a combination of basis states                       |
-| Measurement           | Observing a quantum state changes the system                             |
-| No-Cloning Theorem    | Unknown quantum states cannot be perfectly copied                        |
-| Diagonal Basis States | The |+\⟩ and |−⟩ states help reveal eavesdropping                        |
-| BB84 Protocol         | Quantum key distribution secured by quantum physics                      |
-| Entanglement          | Quantum systems can exhibit correlations stronger than classical systems |
+| Concept | Description |
+| :--- | :--- |
+| **Superposition** | A qubit can exist in a combination of basis states |
+| **Measurement** | Observing a quantum state changes the system |
+| **No-Cloning Theorem** | Unknown quantum states cannot be perfectly copied |
+| **Diagonal Basis States** | The |+⟩ and |−⟩ states help reveal eavesdropping |
+| **BB84 Protocol** | Quantum key distribution secured by quantum physics |
+| **Entanglement** | Quantum systems can exhibit correlations stronger than classical systems |
 
 ---
 
@@ -40,7 +40,7 @@ The game includes a Qiskit circuit demonstrating why arbitrary quantum states ca
 
 ## Circuit Overview
 
-* An H gate prepares the superposition state |+\⟩
+* An H gate prepares the superposition state |+⟩
 * A CNOT operation attempts to duplicate the state onto a second qubit
 * Instead of producing two independent copies, the circuit creates an entangled Bell state
 
@@ -54,7 +54,7 @@ That limitation is one of the key ideas behind the No-Cloning Theorem and forms 
 
 ## Important Scientific Note
 
-This notebook provides an educational demonstration, not a formal mathematical proof of the No-Cloning Theorem.
+This notebook provides an educational demonstration, not a formal mathematical proof of the No-Cloning Theorem. 
 
 A full proof follows from the linearity and unitarity of quantum mechanics, which show that no universal operation can perfectly clone arbitrary unknown quantum states.
 
@@ -64,17 +64,17 @@ A full proof follows from the linearity and unitarity of quantum mechanics, whic
 
 Suppose a universal cloning operation U could copy any quantum state:
 
-U(|ψ⟩|0⟩) = |ψ⟩|ψ⟩
+$$U(|\psi\rangle|0\rangle) = |\psi\rangle|\psi\rangle$$
 
 and also:
 
-U(|φ⟩|0⟩) = |φ⟩|φ⟩
+$$U(|\phi\rangle|0\rangle) = |\phi\rangle|\phi\rangle$$
 
 Because quantum operations preserve inner products:
 
-⟨ψ|φ⟩ = ⟨ψ|φ⟩²
+$$\langle\psi|\phi\rangle = \langle\psi|\phi\rangle^2$$
 
-This equation is only satisfied when states are identical or orthogonal.
+This equation is only satisfied when states are identical ($\langle\psi|\phi\rangle = 1$) or orthogonal ($\langle\psi|\phi\rangle = 0$).
 
 Therefore, no universal quantum operation can perfectly clone arbitrary unknown quantum states.
 
@@ -94,13 +94,13 @@ Therefore, no universal quantum operation can perfectly clone arbitrary unknown 
 
 # 👤 Characters
 
-| Character | Role                                                     |
-| --------- | -------------------------------------------------------- |
-| 🔵 Elliot | The electron messenger                                   |
-| ⚡ Flash   | The photon communication partner                         |
-| 📡 Alice  | Sender of quantum states                                 |
-| 📡 Bob    | Receiver and measurement operator                        |
-| 👤 Eve    | The eavesdropper attempting to intercept the quantum key |
+| Character | Role |
+| :--- | :--- |
+| 🔵 **Elliot** | The electron messenger |
+| ⚡ **Flash** | The photon communication partner |
+| 📡 **Alice** | Sender of quantum states |
+| 📡 **Bob** | Receiver and measurement operator |
+| 👤 **Eve** | The eavesdropper attempting to intercept the quantum key |
 
 ---
 
@@ -122,59 +122,52 @@ Therefore, no universal quantum operation can perfectly clone arbitrary unknown 
 * qiskit-aer
 
 Install dependencies:
-
+```bash
 pip install ipywidgets qiskit qiskit-aer
 
----
-
-# 🤖 AI Usage Disclosure
+````
+## 🤖 AI Usage Disclosure
 
 In accordance with unitaryHACK's Ethical AI policy:
 
-AI Tool Used: DeepSeek
-
-AI assistance was used for Python code structure suggestions, interface styling support, and markdown formatting based on the project's original educational concept and gameplay design.
-
-The game concept, characters, educational structure, scientific explanations, and quantum learning framework are original work created and directed by the author.
-
-All code was manually tested and reviewed for correctness. The quantum concepts and explanations were independently verified and refined by the author.
+* **AI Tools Used:** DeepSeek / Gemini
+* **Nature of Assistance:** AI assistance was leveraged for Python code structure suggestions, interface styling support, and markdown formatting. 
+* **Human Directive:** The entire underlying architecture, game concept (Elliot the Electron, Flash, and the Safety Passage narrative), educational design framework, and scientific explanations are original works created, structured, and directed entirely by the author.
+* **Verification:** All generated components were manually tested, modified, and executed on Google Colab. The underlying quantum mechanics and code logic were independently verified for technical accuracy and scientific rigor by the author.
 
 ---
 
-# 🚀 My Quantum Journey
+## 🚀 My Quantum Journey
 
-I entered quantum computing through a nontraditional path. With a background in English Literature and diplomas in Computer Science, Teaching, and Data Analysis, I later taught myself quantum mechanics, Python, and Qiskit through MIT OpenCourseWare, Stanford Online, and hands-on experimentation.
+I entered quantum computing through a completely non-traditional path. Holding an MA in English Literature alongside diplomas in Computer Science, Teaching, and Data Analysis, I am a self-taught quantum mechanics learner. I built my foundational knowledge utilizing resources like MIT OpenCourseWare (8.04), Stanford Online, and rigorous hands-on experimentation with open-source software tools.
 
-Today I contribute to quantum education and outreach as:
+Today, I actively contribute to global quantum education, democratization, and outreach initiatives:
 
-* IBM Qiskit Advocate (2025)
-* Friend of OQI, Open Quantum Institute at CERN (2026)
-* Mentor, Qiskit Advocate Mentorship Program (QAMP)
+* **IBM Qiskit Advocate** (2025)
+* **Friend of OQI**, Open Quantum Institute at CERN (2026)
+* **Mentor**, Qiskit Advocate Mentorship Program (QAMP)
+* **Member**, IEEE GRSS QUEST Technical Committee
 
-I believe quantum education should be accessible to learners from both STEM and nontraditional backgrounds.
-
-This project was created to teach quantum concepts through storytelling, interaction, and play.
-
----
-
-# 📂 Repository Structure
-
-elliot_game.ipynb   — Main interactive notebook
-README.md           — Project documentation
-LICENSE             — MIT License
+I firmly advocate for "STEAM"—intentionally integrating the Arts into STEM fields—to ensure quantum education remains structurally accessible, welcoming, and intuitive for learners regardless of their disciplinary background. This project represents that vision: translating cold linear algebra into narrative, interaction, and structural play.
 
 ---
 
-# 📄 License
+## 📂 Repository Structure
 
-MIT License
+* `elliot_game.ipynb` — Main interactive Jupyter notebook containing the game interface, simulation loop, and Qiskit demonstration.
+* `README.md` — Project documentation, scientific contextualization, and operational guide.
+* `LICENSE` — Official legal distribution terms.
 
 ---
 
-# 🔗 Links
+## 📄 License
 
-GitHub: learningdungeon
+This repository is licensed under the **MIT License**. See the `LICENSE` file for more details.
 
-Sentinel Framework DOI: 10.5281/zenodo.20464416
+---
 
-YouTube Demo: https://www.youtube.com/watch?v=pCbDTv2Wl2I
+## 🔗 Links
+
+* **GitHub Repository:** [learningdungeon](https://github.com/learningdungeon)
+* **Sentinel Framework DOI:** [10.5281/zenodo.20464416](https://doi.org/10.5281/zenodo.20464416)
+* **Video Demonstration:** [YouTube Project Walkthrough](https://www.youtube.com/watch?v=pCbDTv2Wl2I)
